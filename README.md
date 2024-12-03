@@ -1,7 +1,9 @@
 
 # Singularity Test Suite
 
-**Singularity Test Suite**は、Singularity Societyの入会条件を満たすための技術的課題に取り組むためのリポジトリです。特に、再帰的なデータ処理や比較、マージ、差分計算など、複雑なデータ構造を扱う関数の実装を目的としています。
+**Singularity Test Suite**は、Singularity Societyの入会条件を満たすための技術的課題に取り組むためのリポジトリです。  
+詳細はこちら  
+https://singularitysociety.org/articles/blog/2024-10-22/
 
 ## 概要
 
@@ -19,22 +21,14 @@ type AnyData = Record<string, NestedData>;
 interface NestedArray extends Array<NestedData> {}
 ```
 
-## 実装内容
+## 環境情報
 
-1. **全ての値を"hello"に書き換える関数**
-   - 入れ子になったデータ構造内の全ての値を再帰的に"hello"に置き換えます。
-
-2. **二つのデータが型まで含めて同じか比較する関数**
-   - 二つのデータが型と値の両方で一致するかを再帰的に比較します。
-
-3. **二つのデータをマージする関数**
-   - 二つのデータを指定したルールに基づいてマージします。マージの定義は、同じキーが存在する場合、配列にまとめるか、再帰的にマージするか、後の値で上書きするかなど、柔軟に設定できます。
-
-4. **二つのデータの差分を求める関数**
-   - 二つのデータの差分を再帰的に計算し、どの部分が異なるかを明示します。
-
-5. **複数のデータに対して動作する関数**
-   - 上記の比較やマージの機能を、三つ以上のデータに対して適用できるよう拡張しています。
+   ```bash
+   $ tsc -v
+   Version 5.7.2
+   $ node -v
+   v20.18.1
+   ```
 
 ## 使用方法
 
@@ -47,28 +41,59 @@ interface NestedArray extends Array<NestedData> {}
    cd singularity-test-suite
    ```
 
-2. 必要な依存関係をインストールします。
-
-   ```bash
-   npm install
-   ```
-
 3. TypeScriptファイルをコンパイルします。
 
    ```bash
-   tsc main.ts
+   tsc
    ```
 
 4. コンパイルされたJavaScriptファイルを実行します。
 
    ```bash
-   node main.js
+   node dist/main.js
    ```
 
-## コントリビューション
+実行結果
 
-このリポジトリは、Singularity Societyへの参加を希望する方々が自身の技術力を示すためのものです。実装したコードをGitHubにアップロードし、X（旧Twitter）でお知らせください。これらの処理をスムーズに実装し、自身のアイデアを形にできる方は、Singularity Societyに参加する条件を満たしています。
+   ```bash
+   node dist/main.js
+   問題1: 値を 'hello' に書き換えた結果
+   元のデータ:  { key: 1, nested: { value: 'test' } }
+   書き換え後:  { key: 'hello', nested: { value: 'hello' } }
+
+   問題2: 比較結果 (a, b)
+   データ a:  { key: 1, nested: { value: 'test' } }
+   データ b:  { key: 1, nested: { value: 'test' } }
+   結果:  true
+
+   問題2: 比較結果 (a, c)
+   データ a:  { key: 1, nested: { value: 'test' } }
+   データ c:  { key: 2, nested: { value: 'world' } }
+   結果:  false
+
+   問題3: マージ結果 (a, d)
+   データ a:  { key: 1, nested: { value: 'test' } }
+   データ d:  { extra: true, nested: { value: 'hello' } }
+   マージ後:  { key: 1, nested: { value: 'hello' }, extra: true }
+
+   問題4: 差分 (a, c)
+   データ a:  { key: 1, nested: { value: 'test' } }
+   データ c:  { key: 2, nested: { value: 'world' } }
+   差分:  { nested: {} }
+
+   問題5: 複数比較 (a, b, c)
+   データ a:  { key: 1, nested: { value: 'test' } }
+   データ b:  { key: 1, nested: { value: 'test' } }
+   データ c:  { key: 2, nested: { value: 'world' } }
+   全て一致するか:  false
+
+   問題5: 複数マージ (a, b, c, d)
+   データ a:  { key: 1, nested: { value: 'test' } }
+   データ b:  { key: 1, nested: { value: 'test' } }
+   データ c:  { key: 2, nested: { value: 'world' } }
+   データ d:  { extra: true, nested: { value: 'hello' } }
+   複数マージ後:  { key: 2, nested: { value: 'hello' }, extra: true }
+   ```
 
 ## ライセンス
-
 このプロジェクトはMITライセンスの下で公開されています。
