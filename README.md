@@ -95,5 +95,3 @@ interface NestedArray extends Array<NestedData> {}
    複数マージ後:  { key: 2, nested: { value: 'hello' }, extra: true }
    ```
 
-## ライセンス
-このプロジェクトはMITライセンスの下で公開されています。
