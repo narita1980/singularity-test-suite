@@ -131,24 +131,43 @@ function deepMergeMultiple(...datas: NestedData[]): NestedData {
 // 実行例
 // ==========================
 const a: AnyData = { key: 1, nested: { value: "test" } };
-const b: AnyData = { key: 1, nested: { value: "hello" } };
+const b: AnyData = { key: 1, nested: { value: "test" } };
 const c: AnyData = { key: 2, nested: { value: "world" } };
-const d: AnyData = { extra: true, nested: { value: "test" } };
+const d: AnyData = { extra: true, nested: { value: "hello" } };
 
-console.log("問題1: 値を 'hello' に書き換え");
-console.log(replaceValuesWithHello(a));
+console.log("問題1: 値を 'hello' に書き換えた結果");
+console.log("元のデータ: ", a);
+console.log("書き換え後: ", replaceValuesWithHello(a));
 
-console.log("\n問題2: 比較 (a, b)");
-console.log(deepEqual(a, b)); // true
+console.log("\n問題2: 比較結果 (a, b)");
+console.log("データ a: ", a);
+console.log("データ b: ", b);
+console.log("結果: ", deepEqual(a, b)); // true
 
-console.log("\n問題3: マージ (a, c)");
-console.log(deepMerge(a, c));
+console.log("\n問題2: 比較結果 (a, c)");
+console.log("データ a: ", a);
+console.log("データ c: ", c);
+console.log("結果: ", deepEqual(a, c)); // false
+
+console.log("\n問題3: マージ結果 (a, d)");
+console.log("データ a: ", a);
+console.log("データ d: ", d);
+console.log("マージ後: ", deepMerge(a, d));
 
 console.log("\n問題4: 差分 (a, c)");
-console.log(deepDiff(a, c));
+console.log("データ a: ", a);
+console.log("データ c: ", c);
+console.log("差分: ", deepDiff(a, c));
 
 console.log("\n問題5: 複数比較 (a, b, c)");
-console.log(deepEqualMultiple(a, b, c)); // false
+console.log("データ a: ", a);
+console.log("データ b: ", b);
+console.log("データ c: ", c);
+console.log("全て一致するか: ", deepEqualMultiple(a, b, c)); // false
 
 console.log("\n問題5: 複数マージ (a, b, c, d)");
-console.log(deepMergeMultiple(a, b, c, d));
+console.log("データ a: ", a);
+console.log("データ b: ", b);
+console.log("データ c: ", c);
+console.log("データ d: ", d);
+console.log("複数マージ後: ", deepMergeMultiple(a, b, c, d));
