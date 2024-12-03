@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "lib": ["es2019", "dom"],
+    "outDir": "dist"  // 出力先のディレクトリとして dist を指定
+  },
+  "include": ["main.ts"],  // main.ts を含むように設定
+  "exclude": ["node_modules"]
+}

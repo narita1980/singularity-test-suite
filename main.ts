@@ -18,7 +18,7 @@ function replaceValuesWithHello(data: NestedData): NestedData {
   if (Array.isArray(data)) {
     return data.map(replaceValuesWithHello);
   }
-  if (typeof data === 'object') {
+  if (typeof data === 'object' && data !== null) {
     return Object.fromEntries(
       Object.entries(data).map(([key, value]) => [key, replaceValuesWithHello(value)])
     );
@@ -41,7 +41,10 @@ function deepEqual(data1: NestedData, data2: NestedData): boolean {
       const keys1 = Object.keys(data1);
       const keys2 = Object.keys(data2);
       if (keys1.length !== keys2.length) return false;
-      return keys1.every((key) => key in data2 && deepEqual(data1[key], data2[key]));
+      return keys1.every((key) =>
+        key in (data2 as NestedObject) &&
+        deepEqual((data1 as NestedObject)[key], (data2 as NestedObject)[key])
+      );
     }
     return false;
   }
@@ -60,11 +63,15 @@ function deepMerge(data1: NestedData, data2: NestedData): NestedData {
       return [...data1, ...data2];
     } else if (!Array.isArray(data1) && !Array.isArray(data2)) {
       const result: NestedObject = { ...data1 };
-      for (const key in data2) {
-        if (key in data1) {
-          result[key] = deepMerge(data1[key], data2[key]);
-        } else {
-          result[key] = data2[key];
+      if (typeof data2 === 'object' && data2 !== null) {
+        for (const key in data2) {
+          if (Object.prototype.hasOwnProperty.call(data2, key)) {
+            if (key in data1) {
+              result[key] = deepMerge((data1 as NestedObject)[key], (data2 as NestedObject)[key]);
+            } else {
+              result[key] = (data2 as NestedObject)[key];
+            }
+          }
         }
       }
       return result;
@@ -76,7 +83,7 @@ function deepMerge(data1: NestedData, data2: NestedData): NestedData {
 // ==========================
 // 問題 4: 差分取得関数
 // ==========================
-function deepDiff(data1: NestedData, data2: NestedData): NestedData {
+function deepDiff(data1: NestedData, data2: NestedData): NestedData | undefined {
   if (typeof data1 !== typeof data2) {
     return { left: data1, right: data2 };
   }
@@ -91,13 +98,15 @@ function deepDiff(data1: NestedData, data2: NestedData): NestedData {
       const keys1 = Object.keys(data1);
       const keys2 = Object.keys(data2);
       for (const key of new Set([...keys1, ...keys2])) {
-        if (key in data1 && key in data2) {
-          const diff = deepDiff(data1[key], data2[key]);
-          if (diff !== undefined) {
-            result[key] = diff;
+        if (typeof data1 === "object" && data1 !== null && typeof data2 === "object" && data2 !== null) {
+          if (key in data1 && key in data2) {
+            const diff = deepDiff((data1 as NestedObject)[key], (data2 as NestedObject)[key]);
+            if (diff !== undefined) {
+              result[key] = diff;
+            }
+          } else {
+            result[key] = key in data1 ? (data1 as NestedObject)[key] : (data2 as NestedObject)[key];
           }
-        } else {
-          result[key] = key in data1 ? data1[key] : data2[key];
         }
       }
       return result;
@@ -105,6 +114,7 @@ function deepDiff(data1: NestedData, data2: NestedData): NestedData {
   }
   return undefined;
 }
+
 
 // ==========================
 // 問題 5: 複数データ対応関数
@@ -120,7 +130,7 @@ function deepMergeMultiple(...datas: NestedData[]): NestedData {
 // ==========================
 // 実行例
 // ==========================
-const a: AnyData = { key: 1, nested: { value: "hello" } };
+const a: AnyData = { key: 1, nested: { value: "test" } };
 const b: AnyData = { key: 1, nested: { value: "hello" } };
 const c: AnyData = { key: 2, nested: { value: "world" } };
 const d: AnyData = { extra: true, nested: { value: "test" } };
