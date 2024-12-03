@@ -43,7 +43,7 @@ interface NestedArray extends Array<NestedData> {}
 1. リポジトリをクローンします。
 
    ```bash
-   git clone https://github.com/your-username/singularity-test-suite.git
+   git clone https://github.com/narita1980/singularity-test-suite
    cd singularity-test-suite
    ```
 
